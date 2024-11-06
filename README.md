@@ -1,18 +1,25 @@
-# Clone project
+## Clone project
 
-### `git clone https://github.com/gian10carlos/so-frontend-web-app`
+```bash
+$ git clone https://github.com/gian10carlos/so-frontend-web-app?tab=readme-ov-file#npm-install
+```
 
-# Available Scripts
+## Config environment
 
-### `cd so-frontend-app`
+```bash
+$ cp .env.example .env
+```
 
-# Install packages project
+## Install dependencies
 
-### `npm install`
+```bash
+$ npm install
+```
 
-# Running project
+## Running project
 
-### `npm start`
+In the project directory, you can run:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+$ npm start
+```
