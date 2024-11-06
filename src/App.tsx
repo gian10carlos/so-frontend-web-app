@@ -1,26 +1,42 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AmountPage, HomePage, SigninPage } from './app/presentation/pages';
+import { ProtectedRoutes, RedirectAuth } from './middleware/middleware';
+import VoucherPage from './app/presentation/pages/transfer/voucher/page';
+import AddressPage from './app/presentation/pages/transfer/address/page';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <RedirectAuth>
+            <SigninPage />
+          </RedirectAuth>
+        } />
+        <Route path='/home' element={
+          <ProtectedRoutes>
+            <HomePage />
+          </ProtectedRoutes>
+        } />
+        <Route path='/transfer' element={
+          <ProtectedRoutes>
+            <AddressPage />
+          </ProtectedRoutes>
+        } />
+        <Route path='/transfer/:account' element={
+          <ProtectedRoutes>
+            <AmountPage />
+          </ProtectedRoutes>
+        } />
+        <Route path='/transfer/:account/:voucher' element={
+          <ProtectedRoutes>
+            <VoucherPage />
+          </ProtectedRoutes>
+        } />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
