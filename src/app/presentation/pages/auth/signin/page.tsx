@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { CustomButton, CustomInput } from "../../../components";
 import axiosIn from "../../../../api/axiosInstance";
-
+import { FaUser, FaLock } from 'react-icons/fa';
+import { Link } from "react-router-dom";
 
 export default function SigninPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
 
   const handleLoginClick = async () => {
     try {
@@ -30,15 +30,45 @@ export default function SigninPage() {
   }
 
   return (
-    <div className="w-full h-svh flex justify-center">
-      <div className="w-1/3 shadow-md h-2/3">
-        <h1 className="text-center text-4xl">Log In</h1>
-        <p>Username:</p>
-        <CustomInput value={username} type="text" onChange={(e) => setUsername(e.target.value)} />
-        <p>Password: </p>
-        <CustomInput value={password} type="password" onChange={(e) => setPassword(e.target.value)} />
-        <CustomButton textButton="Log In" onClick={handleLoginClick} />
+    <div className="w-full h-screen flex items-center justify-center bg-gray-700">
+      <div className="bg-white w-80 p-8 rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold text-center mb-6">Iniciar Sesion</h1>
+
+        <div className="mb-4">
+          <label className="flex items-center border-b border-gray-300 py-2">
+            <FaUser className="mr-2 text-gray-400" />
+            <CustomInput
+              placeholder="DNI"
+              value={username}
+              type="text"
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <div className="mb-4">
+          <label className="flex items-center border-b border-gray-300 py-2">
+            <FaLock className="mr-2 text-gray-400" />
+            <CustomInput
+              placeholder="password"
+              value={password}
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </label>
+        </div>
+
+        <div className="text-center mb-4">
+          <Link to="/signup">
+            <span className="text-sm text-gray-500 hover:text-gray-700">No tiene cuenta?</span>
+          </Link>
+        </div>
+
+        <CustomButton
+          textButton="Ingresar"
+          onClick={handleLoginClick}
+        />
       </div>
     </div>
-  )
+  );
 }

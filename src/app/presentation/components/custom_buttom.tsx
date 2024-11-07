@@ -2,15 +2,16 @@ import React from "react";
 
 interface CustomButtomProps {
     textButton: string;
-    onClick: ()=> void;
+    onClick: () => void;
+    classStyle?: string;
 }
 
-const CustomButton: React.FC<CustomButtomProps> = ({textButton, onClick}) => {
-    return <button 
-    onClick={onClick}
-    className="w-24 h-12 py-2 px-5 m-1 bg-slate-500 rounded-md text-white hover:bg-slate-600 shadow-mdz">
+const CustomButton: React.FC<CustomButtomProps> = ({ textButton, onClick, classStyle }) => {
+    return <button
+        onClick={onClick}
+        className={`w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200 ${classStyle}`}>
         {textButton}
-        </button>;
-  };
-  
-  export default CustomButton;
+    </button>;
+};
+
+export default CustomButton;

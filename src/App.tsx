@@ -4,6 +4,7 @@ import { AmountPage, HomePage, SigninPage } from './app/presentation/pages';
 import { ProtectedRoutes, RedirectAuth } from './middleware/middleware';
 import VoucherPage from './app/presentation/pages/transfer/voucher/page';
 import AddressPage from './app/presentation/pages/transfer/address/page';
+import SignupPage from './app/presentation/pages/auth/signup/page';
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,11 @@ const App: React.FC = () => {
         <Route path="/" element={
           <RedirectAuth>
             <SigninPage />
+          </RedirectAuth>
+        } />
+        <Route path="/signup" element={
+          <RedirectAuth>
+            <SignupPage />
           </RedirectAuth>
         } />
         <Route path='/home' element={

@@ -47,7 +47,7 @@ export default function HomePage() {
         <div className="p-4 flex items-center space-x-4">
           <img src="https://via.placeholder.com/40" alt="User Avatar" className="w-10 h-10 rounded-full" />
           <div>
-            <h2 className="text-lg font-semibold">Hola, Gian Carlos 👋</h2>
+            <h2 className="text-lg font-semibold">Hola, 👋</h2>
           </div>
         </div>
 
@@ -57,7 +57,6 @@ export default function HomePage() {
           <div className="text-xs text-gray-400 mt-1">Perfil: 1100326447</div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex justify-around mt-6">
           <CustomButtonCircle icon={'🚀'} text={'Transferir'} />
           <CustomButtonCircle icon={'⬆️'} text={'Subir'} />
