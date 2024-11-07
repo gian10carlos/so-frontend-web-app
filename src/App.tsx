@@ -29,7 +29,7 @@ const App: React.FC = () => {
             <AmountPage />
           </ProtectedRoutes>
         } />
-        <Route path='/transfer/:account/:voucher' element={
+        <Route path='/transfer/voucher/:account' element={
           <ProtectedRoutes>
             <VoucherPage />
           </ProtectedRoutes>
