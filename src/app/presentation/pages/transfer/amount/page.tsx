@@ -53,7 +53,6 @@ export default function AmountPage() {
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
             <CustomNavHeader />
-
             <div className="mt-20 max-w-md w-full bg-white rounded-xl shadow-md p-6">
                 <div className="bg-gray-800 text-white rounded-lg p-4 flex items-center">
                     <img src="https://via.placeholder.com/40" alt='' className="w-10 h-10 rounded-full mr-4" />

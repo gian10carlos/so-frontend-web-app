@@ -33,7 +33,6 @@ export default function AddressPage() {
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
             <CustomNavHeader />
-
             <div className="mt-20 max-w-md w-full bg-white rounded-xl shadow-md p-6">
                 <input
                     type="text"
@@ -42,7 +41,6 @@ export default function AddressPage() {
                     onChange={(e) => setSearch(e.target.value)}
                     className="w-full text-center text-2xl font-semibold border border-gray-300 rounded-md p-4 focus:outline-none focus:border-gray-400"
                 />
-
                 <div className="mt-6 space-y-4">
                     {coincidence.map((account, index) => (
                         <div

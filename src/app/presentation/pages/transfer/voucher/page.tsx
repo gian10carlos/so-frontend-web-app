@@ -12,7 +12,7 @@ export default function VoucherPage() {
                 <div className="text-green-500 text-6xl">⬅️</div>
                 <div className="text-red-500 text-6xl">➡️</div>
             </div>
-
+        
             <h1 className="text-4xl font-semibold mb-4">S/. {amount}</h1>
 
             <div className="flex flex-col items-center">
