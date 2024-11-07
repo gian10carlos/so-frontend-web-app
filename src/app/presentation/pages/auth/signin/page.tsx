@@ -21,7 +21,6 @@ export default function SigninPage() {
       if (response.status === 201) {
         localStorage.setItem("token", response.data["token"]);
         localStorage.setItem('tokenTime', Date.now().toString());
-
         window.location.href = "/home";
       }
 
