@@ -20,7 +20,8 @@ export default function SignupPage() {
 
   const getApiDni = async () => {
     try {
-      await apiDniReniec.verifyDni(dni);
+      const fullname = await apiDniReniec.verifyDni(dni);
+      console.log(fullname)
     } catch (error) {
       console.log('Error API RENIEC: ' + error)
     }
