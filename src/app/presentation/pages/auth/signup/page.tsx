@@ -3,6 +3,7 @@ import { CustomButton, CustomInput } from "../../../components";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import axiosIn from "../../../../api/axiosInstance";
+import { ApiDniReniec } from "../../../../domian";
 
 export default function SignupPage() {
   const [dni, setDni] = useState<string>("");
@@ -15,27 +16,32 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
+  const apiDniReniec = new ApiDniReniec();
+
   const handleRegisterClick = async () => {
     try {
       if (password !== confirmPassword) {
         alert('Las contraeñas no coinciden');
         return;
       }
+      const fullname = await apiDniReniec.verifyDni(dni);
+
       const date = new Date().toISOString().split('.')[0] + 'Z';
       const response = await axiosIn.post('/auth/register', {
         "dni": dni,
+        "first_name": fullname['nombres'],
+        "last_name": `${fullname['apellidoPaterno']} ${fullname['apellidoMaterno']}`,
         "code_identity": identifier,
         "card_number": cardNumber,
         "ccv": ccv,
         "code_key": atmPassword,
         "password": password,
         "ip_log": "172.183.12.32",
-        "dateInp": date,
-        "amount": 0
+        "dateInp": date
       });
 
       if (response.status === 201) {
-        localStorage.setItem("token", response.data["token"]);
+        localStorage.setItem('token', response.data["token"]);
         localStorage.setItem('tokenTime', Date.now().toString());
         window.location.href = "/home";
       }

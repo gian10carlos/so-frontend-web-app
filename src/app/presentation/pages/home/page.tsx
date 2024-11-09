@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import CustomNavHeader from '../../components/customNavHeader';
 import axiosIn from '../../../api/axiosInstance';
 import { jwtDecode } from 'jwt-decode';
@@ -8,36 +8,58 @@ import { DecodedToken, Transfer } from './interface';
 export default function HomePage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [transfers, setTransfers] = useState<Transfer[]>([]);
+  const [userName, setUserName] = useState<string>('');
+  const [userBalance, setUserBalance] = useState<number>(0);
+
+  const extractUserIdFromToken = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken: DecodedToken = jwtDecode(token);
+        if (decodedToken.id) {
+          setUserId(decodedToken.id);
+        }
+      } catch (error) {
+        console.error('Error decoding token', error);
+      }
+    }
+  };
+
+  const getListTransfers = useCallback(async () => {
+    if (userId) {
+      try {
+        const response = await axiosIn.get('/transfer/' + userId);
+
+        if (response.data.people) {
+          setUserName(response.data.people.first_name || '');
+          setUserBalance(response.data.people.person_balances.amount || 0);
+        }
+
+        let transfersArray: Transfer[] = [];
+
+        if (response.data && typeof response.data === 'object' && !Array.isArray(response.data)) {
+          transfersArray = Object.values(response.data).filter((item: any) => item && item.id) as Transfer[];
+        } else {
+          transfersArray = response.data.transfers || [];
+        }
+
+        setTransfers(transfersArray);
+      } catch (error) {
+        console.error('Error fetching transfers:', error);
+        setTransfers([]);
+      }
+    }
+  }, [userId]);
 
   useEffect(() => {
-    const extractUserIdFromToken = () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const decodedToken: DecodedToken = jwtDecode(token);
-          if (decodedToken.id) {
-            setUserId(decodedToken.id);
-          }
-        } catch (error) {
-          console.error('Error decoding token', error);
-        }
-      }
-    };
-
     extractUserIdFromToken();
   }, []);
 
   useEffect(() => {
-    const getListTransfers = async () => {
-      if (userId) {
-        const response = await axiosIn.get('/transfer/' + userId);
-        setTransfers(response.data.transfers);
-      }
-    };
-
-    getListTransfers();
-  }, [userId]);
-
+    if (userId) {
+      getListTransfers();
+    }
+  }, [userId, getListTransfers]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 flex flex-col items-center">
@@ -47,14 +69,14 @@ export default function HomePage() {
         <div className="p-4 flex items-center space-x-4">
           <img src="https://via.placeholder.com/40" alt="User Avatar" className="w-10 h-10 rounded-full" />
           <div>
-            <h2 className="text-lg font-semibold">Hola, 👋</h2>
+            <h2 className="text-lg font-semibold">Hola, {userName} 👋</h2>
           </div>
         </div>
 
         <div className="p-6 bg-gray-800 text-white rounded-lg text-center mt-4">
           <div className="text-sm">Perfil balance</div>
-          <div className="text-3xl font-bold">s/. 240.30</div>
-          <div className="text-xs text-gray-400 mt-1">Perfil: 1100326447</div>
+          <div className="text-3xl font-bold">s/. {userBalance}</div>
+          <div className="text-xs text-gray-400 mt-1">Perfil: {userId}</div>
         </div>
 
         <div className="flex justify-around mt-6">
@@ -69,18 +91,21 @@ export default function HomePage() {
             <h3 className="text-lg font-semibold">Transacciones recientes</h3>
           </div>
           <div className="mt-4 max-h-64 overflow-y-auto px-6">
-            {transfers.map((transfer) => (
-              <CustomCard
-                key={transfer.id}
-                name={
-                  transfer.id_send.toString() === userId ? `Transferencia a ${transfer.id_received}`
-                    : `Transferencia de ${transfer.id_send}`
-                }
-                datetime={new Date(transfer.date).toLocaleString()}
-                amount={transfer.amount.toString()}
-                nameClassName={transfer.id_send.toString() === userId ? 'text-red-500' : ''}
-              />
-            ))}
+            {transfers.length > 0 ? (
+              transfers.map((transfer) => (
+                <CustomCard
+                  key={transfer.id}
+                  name={
+                    transfer.id_send.toString() === userId ? `Transferencia a ${transfer.id_received}` : `Transferencia de ${transfer.id_send}`
+                  }
+                  datetime={new Date(transfer.date).toLocaleString()}
+                  amount={transfer.amount.toString()}
+                  nameClassName={transfer.id_send.toString() === userId ? 'text-red-500' : ''}
+                />
+              ))
+            ) : (
+              <p>No se encontraron transacciones recientes.</p>
+            )}
           </div>
         </div>
       </div>

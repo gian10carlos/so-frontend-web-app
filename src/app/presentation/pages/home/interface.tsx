@@ -1,5 +1,6 @@
 export interface DecodedToken {
     id?: string;
+    id_account: string;
 }
 
 export interface Transfer {

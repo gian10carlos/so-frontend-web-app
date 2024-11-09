@@ -1,4 +1,21 @@
 import { Link } from "react-router-dom";
+import axiosIn from "../../api/axiosInstance";
+import { jwtDecode } from "jwt-decode";
+import { DecodedToken } from "../pages/home/interface";
+
+const setLogOut = async () => {
+    const token = localStorage.getItem('token');
+    const date = new Date().toISOString().split('.')[0] + 'Z';
+    if (token) {
+        const decoded: DecodedToken = await jwtDecode(token);
+        const response = await axiosIn.patch('/auth/logout', {
+            id: decoded.id_account,
+            dateUtil: date,
+            dateOut: date
+        });
+        if (response.status === 200) setCloseSession();
+    }
+}
 
 function setCloseSession() {
     localStorage.removeItem("token");
@@ -21,7 +38,7 @@ export default function CustomNavHeader() {
                         <span className="text-xs">Transfer</span>
                     </button>
                 </Link>
-                <button onClick={setCloseSession} className="flex flex-col items-center text-gray-400">
+                <button onClick={setLogOut} className="flex flex-col items-center text-gray-400">
                     <span>👤</span>
                     <span className="text-xs">Cerrar Sesion</span>
                 </button>
