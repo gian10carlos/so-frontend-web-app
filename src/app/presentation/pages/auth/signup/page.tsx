@@ -18,12 +18,21 @@ export default function SignupPage() {
 
   const apiDniReniec = new ApiDniReniec();
 
+  const getApiDni = async () => {
+    try {
+      await apiDniReniec.verifyDni(dni);
+    } catch (error) {
+      console.log('Error API RENIEC: ' + error)
+    }
+  }
+
   const handleRegisterClick = async () => {
     try {
       if (password !== confirmPassword) {
         alert('Las contraeñas no coinciden');
         return;
       }
+      await getApiDni();
       const fullname = await apiDniReniec.verifyDni(dni);
 
       const date = new Date().toISOString().split('.')[0] + 'Z';
