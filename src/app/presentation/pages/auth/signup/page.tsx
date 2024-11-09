@@ -30,7 +30,7 @@ export default function SignupPage() {
       const response = await axiosIn.post('/auth/register', {
         "dni": dni,
         "first_name": fullname['nombres'],
-        "last_name": `${fullname['apellidoPaterno']} ${fullname['apellidoMaterno']}`,
+        "last_name": fullname['apellidoPaterno'] + fullname['apellidoMaterno'],
         "code_identity": identifier,
         "card_number": cardNumber,
         "ccv": ccv,
