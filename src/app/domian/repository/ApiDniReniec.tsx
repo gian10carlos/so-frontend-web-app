@@ -15,7 +15,6 @@ export class ApiDniReniec {
 
             return response.data;
         } catch (error) {
-            console.log(error)
             throw new Error('');
         }
     }

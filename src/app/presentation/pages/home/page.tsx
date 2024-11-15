@@ -4,6 +4,8 @@ import axiosIn from '../../../api/axiosInstance';
 import { jwtDecode } from 'jwt-decode';
 import { CustomButtonCircle, CustomCard } from '../../components';
 import { DecodedToken, Transfer } from './interface';
+import { FaUser } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 export default function HomePage() {
   const [userId, setUserId] = useState<string | null>(null);
@@ -20,13 +22,42 @@ export default function HomePage() {
           setUserId(decodedToken.id);
         }
       } catch (error) {
-        console.error('Error decoding token', error);
+        Swal.fire({
+          title: "Error",
+          text: "Session expirado!",
+          icon: "error",
+          timer: 1500
+        });
+
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500)
       }
     }
   };
 
   const getListTransfers = useCallback(async () => {
     if (userId) {
+      let timerInterval: ReturnType<typeof setInterval>;
+      Swal.fire({
+        title: "Procesando...",
+        html: "Por favor, espera unos segundos.",
+        allowOutsideClick: false,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const timer = Swal.getPopup()?.querySelector("b");
+          timerInterval = setInterval(() => {
+            if (timer) {
+              timer.textContent = `${Swal.getTimerLeft()}`;
+            }
+          }, 100);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        }
+      });
+
       try {
         const response = await axiosIn.get('/transfer/' + userId);
 
@@ -45,8 +76,15 @@ export default function HomePage() {
 
         setTransfers(transfersArray);
       } catch (error) {
-        console.error('Error fetching transfers:', error);
+        Swal.fire({
+          title: "Error",
+          text: "Error mostrar transferencias!",
+          icon: "error",
+          timer: 1500
+        });
         setTransfers([]);
+      } finally {
+        Swal.close();
       }
     }
   }, [userId]);
@@ -67,7 +105,7 @@ export default function HomePage() {
 
       <div className="mt-20 w-full bg-white rounded-xl shadow-md overflow-hidden mb-20">
         <div className="p-4 flex items-center space-x-4">
-          <img src="https://via.placeholder.com/40" alt="User Avatar" className="w-10 h-10 rounded-full" />
+          <FaUser />
           <div>
             <h2 className="text-lg font-semibold">Hola, {userName} 👋</h2>
           </div>
@@ -96,7 +134,7 @@ export default function HomePage() {
                 <CustomCard
                   key={transfer.id}
                   name={
-                    transfer.id_send.toString() === userId ? `Transferencia a ${transfer.id_received}` : `Transferencia de ${transfer.id_send}`
+                    transfer.id_send.toString() === userId ? `Transferencia a ${transfer.received.first_name}` : `Transferencia de ${transfer.id_send}`
                   }
                   datetime={new Date(transfer.date).toLocaleString()}
                   amount={transfer.amount.toString()}

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import axiosIn from '../../../../api/axiosInstance';
 import { jwtDecode } from 'jwt-decode';
 import { DecodedToken } from './interface';
+import Swal from 'sweetalert2';
 
 export default function AmountPage() {
     const location = useLocation();
@@ -23,8 +24,17 @@ export default function AmountPage() {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
-                console.log('Not found token');
-                navigate('/')
+                Swal.fire({
+                    title: "Error",
+                    text: "Session expirado!",
+                    icon: "error",
+                    timer: 1500
+                });
+
+                setTimeout(() => {
+                    localStorage.clear();
+                    window.location.href = '/';
+                }, 1500);
             } else {
                 const decode = jwtDecode<DecodedToken>(token);
                 const date = new Date().toISOString().split('.')[0] + "Z";
@@ -42,7 +52,16 @@ export default function AmountPage() {
             }
 
         } catch (error) {
-            console.log(error);
+            Swal.fire({
+                title: "Error",
+                text: "Operacion fallida!",
+                icon: "error",
+                timer: 1500
+            });
+
+            setTimeout(() => {
+                window.location.href = '/home';
+            }, 1500);
         }
     }
 

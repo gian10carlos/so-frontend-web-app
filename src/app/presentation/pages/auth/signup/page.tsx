@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import axiosIn from "../../../../api/axiosInstance";
 import { ApiDniReniec } from "../../../../domian";
+import Swal from "sweetalert2";
 
 export default function SignupPage() {
   const [dni, setDni] = useState<string>("");
@@ -20,27 +21,57 @@ export default function SignupPage() {
 
   const getApiDni = async () => {
     try {
-      const fullname = await apiDniReniec.verifyDni(dni);
-      alert(fullname);
+      await apiDniReniec.verifyDni(dni);
     } catch (error) {
-      console.log('Error API RENIEC: ' + error)
+      Swal.fire({
+        title: "Error",
+        text: "Intente mas tarde",
+        icon: "error",
+        timer: 1500
+      });
     }
   }
 
   const handleRegisterClick = async () => {
+    let timerInterval: ReturnType<typeof setInterval>;
+    Swal.fire({
+      title: "Procesando...",
+      html: "Por favor, espera unos segundos.",
+      allowOutsideClick: false,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getPopup()?.querySelector("b");
+        timerInterval = setInterval(() => {
+          if (timer) {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    });
+
     try {
       if (password !== confirmPassword) {
-        alert('Las contraeñas no coinciden');
+        Swal.fire({
+          title: "Error",
+          text: "Contraseñas no coinciden!",
+          icon: "error",
+          timer: 1500
+        });
         return;
       }
       await getApiDni();
       const fullname = await apiDniReniec.verifyDni(dni);
+      const lastname: String = fullname['apellidoPaterno'] + fullname['apellidoMaterno']
 
       const date = new Date().toISOString().split('.')[0] + 'Z';
       const response = await axiosIn.post('/auth/register', {
         "dni": dni,
         "first_name": fullname['nombres'],
-        "last_name": fullname['apellidoPaterno'] + fullname['apellidoMaterno'],
+        "last_name": lastname,
         "code_identity": identifier,
         "card_number": cardNumber,
         "ccv": ccv,
@@ -53,10 +84,16 @@ export default function SignupPage() {
       if (response.status === 201) {
         localStorage.setItem('token', response.data["token"]);
         localStorage.setItem('tokenTime', Date.now().toString());
+        Swal.close();
         window.location.href = "/home";
       }
     } catch (error) {
-      console.error(error);
+      Swal.fire({
+        title: "Error",
+        text: "Usuario no registrado",
+        icon: "error",
+        timer: 1500
+      });
     }
   }
 

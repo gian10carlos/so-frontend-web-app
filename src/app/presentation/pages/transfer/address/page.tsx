@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CustomNavHeader } from '../../../components';
 import axiosIn from '../../../../api/axiosInstance';
+import Swal from 'sweetalert2';
 
 export default function AddressPage() {
     const [search, setSearch] = useState('');
@@ -20,7 +21,16 @@ export default function AddressPage() {
                     setCoincidence(response.data);
                 }
             } catch (error) {
-                console.log(error);
+                Swal.fire({
+                    title: "Error",
+                    text: "Error usuarios!",
+                    icon: "error",
+                    timer: 1500
+                });
+
+                setTimeout(() => {
+                    window.location.href = '/home';
+                }, 1500);
             }
         }
         post();

@@ -4,6 +4,7 @@ import axiosIn from "../../../../api/axiosInstance";
 import { FaUser, FaLock } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import { ApiIpPublic } from "../../../../utils/auth/ApiIpPublic";
+import Swal from "sweetalert2";
 
 export default function SigninComponent() {
     const [username, setUsername] = useState<string>("");
@@ -14,12 +15,32 @@ export default function SigninComponent() {
     const handleLoginClick = async () => {
         const date = new Date().toISOString().split('.')[0] + 'Z';
 
+        let timerInterval: ReturnType<typeof setInterval>;
+        Swal.fire({
+            title: "Procesando...",
+            html: "Por favor, espera unos segundos.",
+            allowOutsideClick: false,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+                const timer = Swal.getPopup()?.querySelector("b");
+                timerInterval = setInterval(() => {
+                    if (timer) {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                    }
+                }, 100);
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            }
+        });
+
         try {
-            const ipPulic = await apiIpPublic.get();
+            const ipPublic = await apiIpPublic.get();
             const response = await axiosIn.post('/auth/login', {
                 dni: username,
                 password,
-                ip_log: ipPulic.data['ip'],
+                ip_log: ipPublic.data['ip'],
                 dateInp: date
             }, {
                 headers: {
@@ -30,13 +51,22 @@ export default function SigninComponent() {
             if (response.status === 201) {
                 localStorage.setItem("token", response.data["token"]);
                 localStorage.setItem('tokenTime', Date.now().toString());
+                Swal.close();
                 window.location.href = "/home";
             }
-
         } catch (error) {
-            console.error(error);
+            Swal.fire({
+                title: "Error",
+                text: "Credenciales incorrectas!",
+                icon: "error",
+                timer: 1500
+            });
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         }
-    }
+    };
 
     return (
         <>
