@@ -65,7 +65,7 @@ export default function SignupPage() {
       }
       await getApiDni();
       const fullname = await apiDniReniec.verifyDni(dni);
-      const lastname: String = `${fullname['apellidoPaterno']} ${fullname['apellidoMaterno']}`;
+      const lastname: string = `${fullname['apellidoPaterno']} ${fullname['apellidoMaterno']}`;
 
       const date = new Date().toISOString().split('.')[0] + 'Z';
       const response = await axiosIn.post('/auth/register', {
