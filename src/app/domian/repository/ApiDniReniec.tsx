@@ -6,9 +6,8 @@ export class ApiDniReniec {
     public async verifyDni(dni: String) {
 
         try {
-            const response = await axios.get(`/v2/reniec/dni?numero=${dni}`, {
+            const response = await axios.get(`https://apis.net.pe/consulta-dni-api/v2/reniec/dni?numero=${dni}`, {
                 headers: {
-                    'Referer': 'https://apis.net.pe/consulta-dni-api',
                     'Authorization': `Bearer ${this.token}`,
                 }
             });
