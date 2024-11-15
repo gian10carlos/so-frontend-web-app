@@ -21,7 +21,16 @@ export default function SignupPage() {
 
   const getApiDni = async () => {
     try {
-      await apiDniReniec.verifyDni(dni);
+      const fullname = await apiDniReniec.verifyDni(dni);
+      console.log("RETORNO DE API RENIEC");
+      console.log(fullname);
+      console.log(fullname['nombres']);
+      Swal.fire({
+        title: "Error",
+        text: "NOMBREEE: " + fullname['nombres'],
+        icon: "error",
+        timer: 1500
+      });
     } catch (error) {
       Swal.fire({
         title: "Error",
