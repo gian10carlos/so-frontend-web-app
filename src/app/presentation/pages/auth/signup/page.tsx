@@ -65,7 +65,7 @@ export default function SignupPage() {
       }
       await getApiDni();
       const fullname = await apiDniReniec.verifyDni(dni);
-      const lastname: string = `${fullname['apellidoPaterno']} ${fullname['apellidoMaterno']}`;
+      const lastname: String = fullname['apellidoPaterno'] + fullname['apellidoMaterno']
 
       const date = new Date().toISOString().split('.')[0] + 'Z';
       const response = await axiosIn.post('/auth/register', {
@@ -99,7 +99,7 @@ export default function SignupPage() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gray-700">
-      <div className="bg-white w-1/4 p-8 rounded-lg shadow-md">
+      <div className="bg-white w-1/4 min-w-60 p-8 rounded-lg shadow-md">
         <h1 className="text-2xl font-bold text-center mb-6">Crear Cuenta</h1>
 
         <div className="mb-4">

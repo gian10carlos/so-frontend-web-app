@@ -6,7 +6,7 @@ export default function SigninPage() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gray-700">
-      <div className="bg-white w-1/4 p-8 rounded-lg shadow-md">
+      <div className="bg-white w-1/4 min-w-60 p-8 rounded-lg shadow-md">
         <Suspense fallback={<CustomLoading />}>
           <SigninComponent />
         </Suspense>
