@@ -134,7 +134,7 @@ export default function HomePage() {
                 <CustomCard
                   key={transfer.id}
                   name={
-                    transfer.id_send.toString() === userId ? `Transferencia a ${transfer.received.first_name}` : `Transferencia de ${transfer.send.first_name}`
+                    transfer.id_send.toString() === userId ? `Transferencia a ${transfer.received && transfer.received.first_name ? transfer.received.first_name : '******'}` : `Transferencia de ${transfer.send.first_name}`
                   }
                   datetime={new Date(transfer.date).toLocaleString()}
                   amount={transfer.amount.toString()}
