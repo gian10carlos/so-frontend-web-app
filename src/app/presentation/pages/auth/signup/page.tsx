@@ -3,7 +3,6 @@ import { CustomButton, CustomInput } from "../../../components";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import axiosIn from "../../../../api/axiosInstance";
-import { ApiDniReniec } from "../../../../domian";
 import Swal from "sweetalert2";
 
 export default function SignupPage() {
@@ -16,30 +15,6 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-
-  const apiDniReniec = new ApiDniReniec();
-
-  const getApiDni = async () => {
-    try {
-      const fullname = await apiDniReniec.verifyDni(dni);
-      console.log("RETORNO DE API RENIEC");
-      console.log(fullname);
-      console.log(fullname['nombres']);
-      Swal.fire({
-        title: "Error",
-        text: "NOMBREEE: " + fullname['nombres'],
-        icon: "error",
-        timer: 1500
-      });
-    } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: "Intente mas tarde",
-        icon: "error",
-        timer: 1500
-      });
-    }
-  }
 
   const handleRegisterClick = async () => {
     let timerInterval: ReturnType<typeof setInterval>;
@@ -72,15 +47,10 @@ export default function SignupPage() {
         });
         return;
       }
-      await getApiDni();
-      const fullname = await apiDniReniec.verifyDni(dni);
-      const lastname: String = fullname['apellidoPaterno'] + fullname['apellidoMaterno']
 
       const date = new Date().toISOString().split('.')[0] + 'Z';
       const response = await axiosIn.post('/auth/register', {
         "dni": dni,
-        "first_name": fullname['nombres'],
-        "last_name": lastname,
         "code_identity": identifier,
         "card_number": cardNumber,
         "ccv": ccv,

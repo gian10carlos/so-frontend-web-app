@@ -1,1 +1,0 @@
-export { ApiDniReniec } from './repository/ApiDniReniec';
