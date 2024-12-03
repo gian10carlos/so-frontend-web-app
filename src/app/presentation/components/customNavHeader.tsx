@@ -2,18 +2,42 @@ import { Link } from "react-router-dom";
 import axiosIn from "../../api/axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import { DecodedToken } from "../pages/home/interface";
+import Swal from "sweetalert2";
 
 const setLogOut = async () => {
     const token = localStorage.getItem('token');
     const date = new Date().toISOString().split('.')[0] + 'Z';
-    if (token) {
-        const decoded: DecodedToken = await jwtDecode(token);
-        const response = await axiosIn.patch('/auth/logout', {
-            id: decoded.id_account,
-            dateUtil: date,
-            dateOut: date
+
+    Swal.fire({
+        title: "Cerrando sesión...",
+        text: "Por favor espera.",
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+    });
+
+    try {
+        if (token) {
+            const decoded: DecodedToken = await jwtDecode(token);
+            const response = await axiosIn.patch('/auth/logout', {
+                id: decoded.id_account,
+                dateUtil: date,
+                dateOut: date
+            });
+
+            if (response.status === 200) {
+                setCloseSession();
+            }
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un problema al cerrar sesión.",
         });
-        if (response.status === 200) setCloseSession();
+    } finally {
+        Swal.close();
     }
 }
 

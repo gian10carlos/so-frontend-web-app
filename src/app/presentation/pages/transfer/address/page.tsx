@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CustomNavHeader } from '../../../components';
 import axiosIn from '../../../../api/axiosInstance';
-import Swal from 'sweetalert2';
+import { getToken } from '../../../../../services/localstorage-service';
+import { handleErrorSwal } from '../../../../../services/error-swal';
 
 export default function AddressPage() {
     const [search, setSearch] = useState('');
@@ -13,20 +14,17 @@ export default function AddressPage() {
         const post = async () => {
             if (!search) return;
             try {
+                const userId = await getToken();
                 const response = await axiosIn.post('/people/list', {
-                    dni: search
+                    dni: search,
+                    id: userId
                 }, { headers: { 'Content-Type': 'application/json' } });
 
                 if (response.status === 201) {
                     setCoincidence(response.data);
                 }
             } catch (error) {
-                Swal.fire({
-                    title: "Error",
-                    text: "Error usuarios!",
-                    icon: "error",
-                    timer: 1500
-                });
+                handleErrorSwal('Ups!, Intente mas tarde!');
 
                 setTimeout(() => {
                     window.location.href = '/home';
