@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AmountPage, HomePage, SigninPage } from './app/presentation/pages';
+import { AmountPage, HomePage, LandingPage, SigninPage } from './app/presentation/pages';
 import { ProtectedRoutes, RedirectAuth } from './middleware/middleware';
 import VoucherPage from './app/presentation/pages/transfer/voucher/page';
 import AddressPage from './app/presentation/pages/transfer/address/page';
@@ -11,6 +11,11 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={
+          <RedirectAuth>
+            <LandingPage />
+          </RedirectAuth>
+        } />
+        <Route path="/signin" element={
           <RedirectAuth>
             <SigninPage />
           </RedirectAuth>
