@@ -2,7 +2,8 @@ import { FaAddressBook, FaBell, FaMap } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const downloadApk = () => {
-
+    const apkUrl = "/apk/yapita_app.apk";
+    window.location.href = apkUrl;
 }
 
 export default function LandingPage() {
